@@ -1,0 +1,229 @@
+.list-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #fff;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.list-header h1 {
+  font-size: 20px;
+  color: #333;
+  font-weight: 500;
+}
+
+.create-button {
+  background-color: #333;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.search-bar {
+  margin-bottom: 24px;
+}
+
+.search-bar input {
+  width: 300px;
+  padding: 8px 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+}
+
+.workflows-list {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 4px;
+}
+
+.list-headers {
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr 2fr 1.5fr;
+  padding: 12px 24px;
+  background: #F9FAFB;
+  border-bottom: 1px solid #E5E7EB;
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
+.workflow-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr 2fr 1.5fr;
+  padding: 16px 24px;
+  border-bottom: 1px solid #E5E7EB;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.workflow-item:hover {
+  background-color: #F9FAFB;
+}
+
+.workflow-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.workflow-id {
+  color: #666;
+  font-size: 14px;
+}
+
+.workflow-edited {
+  color: #666;
+  font-size: 14px;
+}
+
+.workflow-description {
+  color: #666;
+  font-size: 14px;
+}
+
+.workflow-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.star-button {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.execute-button {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  color: #333;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.edit-button {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  color: #333;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.more-button {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0 4px;
+}
+
+.download-button {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-button {
+  min-width: 32px;
+  height: 32px;
+  border: 1px solid #E5E7EB;
+  border-radius: 4px;
+  background: white;
+  color: #333;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.page-button.active {
+  background-color: #333;
+  color: white;
+  border: none;
+}
+
+.page-button.prev,
+.page-button.next {
+  padding: 0 12px;
+}
+
+.ellipsis {
+  color: #666;
+  font-size: 14px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logout-button {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  background: white;
+  color: #6B7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logout-button:hover {
+  background-color: #F9FAFB;
+  border-color: #D1D5DB;
+  color: #EF4444;
+}
+
+.loading,
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-size: 18px;
+  color: #6B7280;
+}
+
+.error {
+  color: #EF4444;
+} 
