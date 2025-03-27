@@ -2,8 +2,11 @@
   width: 100%;
   min-height: 100vh;
   position: relative;
-  background-color: #faf7f2;
+  background-color: #F8F2E7;
   overflow: hidden;
+  background-image: radial-gradient(#F2E3C3 2px, transparent 2px);
+  background-size: 30px 30px;
+  background-position: -5px -5px;
 }
 
 .nav-box {
@@ -102,6 +105,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  margin: 10px 0;
+  z-index: 1;
+}
+
+.flow-element::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background-color: #F2E3C3;
+  border-radius: 50%;
+  z-index: -1;
 }
 
 .input-wrapper {
@@ -145,35 +164,48 @@
 .plus-button {
   width: 30px;
   height: 30px;
-  border-radius: 50%;
-  background-color: #4CAF50;
-  color: white;
   border: none;
-  font-size: 20px;
+  background: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   padding: 0;
   line-height: 1;
   z-index: 2;
   transition: all 0.3s ease;
-  margin: 5px 0;
+  margin: 10px 0;
+  position: relative;
+}
+
+.plus-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .plus-button:hover {
-  background-color: #45a049;
   transform: scale(1.1);
 }
 
 .arrow-container {
-  position: relative;
-  min-height: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  position: relative;
+  margin: 20px 0;
+}
+
+.arrow-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background-color: #F2E3C3;
+  transform: translateX(-50%);
+  z-index: 0;
 }
 
 .arrow {
@@ -515,4 +547,33 @@
 .badge-text {
   background-color: #F3F4F6;
   color: #4B5563;
+}
+
+.nav-inputs {
+  display: flex;
+  flex: 1;
+  gap: 16px;
+}
+
+.title-input,
+.description-input {
+  padding: 8px 12px;
+  border: 1px solid #E5E7EB;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.title-input {
+  width: 200px;
+}
+
+.description-input {
+  flex: 1;
+}
+
+.title-input:focus,
+.description-input:focus {
+  border-color: #2563EB;
 } 

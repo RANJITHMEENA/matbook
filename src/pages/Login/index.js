@@ -1,8 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Logo from '../../Assets/Img/Logo.png'
 import './Login.css';
 
 const Login = () => {
+  useEffect(() => {
+    // Add login-page class when component mounts
+    document.body.classList.add('login-page');
+    
+    // Remove login-page class when component unmounts
+    return () => {
+      document.body.classList.remove('login-page');
+    };
+  }, []);
+
   return (
     <div className="login-container">
       <div className="login-left">

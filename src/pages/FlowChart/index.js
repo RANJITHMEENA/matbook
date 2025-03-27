@@ -4,6 +4,9 @@ import { SAMPLE_WORKFLOWS } from '../../data/sampleWorkflows';
 import Config from '../../Assets/Img/configuration.png';
 import SaveIcon from '../../Assets/Img/saveIcon.png';
 import DeleteIcon from '../../Assets/Img/Delete.png';
+import StartIcon from '../../Assets/Img/Start.png';
+import EndIcon from '../../Assets/Img/End.png';
+import PlusIcon from '../../Assets/Img/plus.png';
 import './FlowChart.css';
 
 const FlowChart = ({ initialData = null }) => {
@@ -15,6 +18,7 @@ const FlowChart = ({ initialData = null }) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState(null);
   const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   
@@ -46,6 +50,8 @@ const FlowChart = ({ initialData = null }) => {
   const [apiUrl, setApiUrl] = useState('');
   const [apiHeaders, setApiHeaders] = useState('');
   const [apiBody, setApiBody] = useState('');
+
+  const [showSaveModal, setShowSaveModal] = useState(false);
 
   // Handle mouse wheel for zooming
   const handleWheel = (e) => {
@@ -131,11 +137,9 @@ const FlowChart = ({ initialData = null }) => {
     const loadWorkflowData = () => {
       setLoading(true);
       try {
-        // If initialData is provided, use it
         if (initialData) {
           loadWorkflow(initialData);
         } 
-        // If we have an ID, fetch from SAMPLE_WORKFLOWS
         else if (id) {
           const foundWorkflow = SAMPLE_WORKFLOWS.find(w => w.id === id);
           if (foundWorkflow) {
@@ -144,9 +148,9 @@ const FlowChart = ({ initialData = null }) => {
             setError('Workflow not found');
           }
         } 
-        // If in create mode, start with empty state
         else {
           setTitle('');
+          setDescription('');
           setFlowElements([]);
         }
       } catch (err) {
@@ -163,6 +167,7 @@ const FlowChart = ({ initialData = null }) => {
     if (!workflowData) return;
 
     setTitle(workflowData.title || '');
+    setDescription(workflowData.description || '');
     
     // Sort elements by position and convert to flowElements format
     const sortedElements = [...workflowData.elements].sort((a, b) => a.position - b.position);
@@ -334,6 +339,10 @@ const FlowChart = ({ initialData = null }) => {
       const workflowData = {
         id: mode === 'create' ? Date.now().toString() : initialData?.id,
         title: title.trim(),
+        description: description.trim(),
+        createdBy: 'Zubin Khanna',
+        updatedAt: new Date().toISOString(),
+        status: 'active',
         nodes: [
           {
             id: 'start',
@@ -383,7 +392,9 @@ const FlowChart = ({ initialData = null }) => {
         <button 
           className="plus-button" 
           onClick={() => handlePlusClick(null)}
-        >+</button>
+        >
+          <img src={PlusIcon} alt="Add" />
+        </button>
       );
     }
 
@@ -453,7 +464,9 @@ const FlowChart = ({ initialData = null }) => {
             <button 
               className="plus-button" 
               onClick={() => handlePlusClick(index)}
-            >+</button>
+            >
+              <img src={PlusIcon} alt="Add" />
+            </button>
           </React.Fragment>
         ))}
       </div>
@@ -464,21 +477,15 @@ const FlowChart = ({ initialData = null }) => {
   const renderNavBox = () => (
     <div className="nav-box">
       <button className="back-button" onClick={() => navigate('/list')}>
-        <span className="arrow-left">←</span>
+        <span className="arrow-left" style={{fontWeight: 800,fontSize: '30px'}}>←</span>
         Go Back
       </button>
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Enter title"
-        readOnly={mode === 'view'}
-      />
-    
-        <div onClick={handleSave}>
-          <img src={SaveIcon} alt="Save" />
-        </div>
-    
+      <div className="nav-inputs">
+ <p style={{fontSize: '14 px',fontWeight: 600}}>{title}</p>
+      </div>
+      <div style={{cursor: 'pointer'}} onClick={() => setShowSaveModal(true)}>
+        <img src={SaveIcon} alt="Save" />
+      </div>
     </div>
   );
 
@@ -498,7 +505,7 @@ const FlowChart = ({ initialData = null }) => {
           cursor: mode === 'view' ? 'default' : (isDragging ? 'grabbing' : 'grab')
         }}
       >
-        <div className="node start">Start</div>
+        <div className="node start"><img src={StartIcon} alt="Start" /></div>
         <div className="arrow-container">
           <div className="arrow"></div>
           {renderFlowElements()}
@@ -518,7 +525,7 @@ const FlowChart = ({ initialData = null }) => {
             </div>
           )}
         </div>
-        <div className="node end">End</div>
+        <div className="node end"><img src={EndIcon} alt="End" /></div>
       </div>
 
      

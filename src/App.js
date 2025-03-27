@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import List from './pages/List';
-import CreateFlowChart from './pages/FlowChart/CreateFlowChart';
+import CreateFlowChart from './pages/CreateFlowChart';
 import ViewFlowChart from './pages/FlowChart/ViewFlowChart';
 import './App.css';
 

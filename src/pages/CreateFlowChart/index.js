@@ -1,10 +1,12 @@
-
-
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SaveIcon from '../../Assets/Img/saveIcon.png';
 import Config from '../../Assets/Img/configuration.png';
-import './FlowChart.css';
+import './CreateFlowChart.css';
+import StartIcon from '../../Assets/Img/Start.png'; 
+import EndIcon from '../../Assets/Img/End.png';
+import PlusIcon from '../../Assets/Img/plus.png';
+import SaveWorkflowModal from '../../components/SaveWorkflowModal/SaveWorkflowModal';
 
 
 
@@ -29,6 +31,8 @@ const CreateFlowChart = () => {
   const [flowElements, setFlowElements] = useState([]);
   const [showTooltip, setShowTooltip] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState(null);
+  const [showSaveModal, setShowSaveModal] = useState(false);
+
   const [title, setTitle] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
@@ -82,6 +86,21 @@ const CreateFlowChart = () => {
     }
   };
 
+  const handleSave = async () => {
+    try {
+      if (!title.trim()) {
+        setError('Please fill in the title');
+        return;
+      }
+
+  
+
+      navigate('/list');
+    } catch (error) {
+      setError(error.message);
+      console.error('Error:', error);
+    }
+  };
   // Handle mouse move for panning
   const handleMouseMove = (e) => {
     if (isDragging) {
@@ -290,7 +309,9 @@ const CreateFlowChart = () => {
         <button 
           className="plus-button" 
           onClick={() => handlePlusClick(null)}
-        >+</button>
+        >
+          <img src={PlusIcon} alt="Add" style={{ width: '20px', height: '20px' }} />
+        </button>
       );
     }
 
@@ -354,7 +375,9 @@ const CreateFlowChart = () => {
             <button 
               className="plus-button" 
               onClick={() => handlePlusClick(index)}
-            >+</button>
+            >
+              <img src={PlusIcon} alt="Add" style={{ width: '20px', height: '20px' }} />
+            </button>
           </React.Fragment>
         ))}
       </div>
@@ -372,14 +395,11 @@ const CreateFlowChart = () => {
           <span className="arrow-left">←</span>
           Go Back
         </button>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Enter title"
-        />
-        <img src={SaveIcon} alt="Save" />
+    <p style={{fontSize: '14 px',fontWeight: 600}}>Untitled</p>
+    <div style={{cursor: 'pointer'}} onClick={() => setShowSaveModal(true)}>
+      <img src={SaveIcon} alt="Save" />
       </div>
+    </div>
       
       <div 
         className="flowchart-container"
@@ -390,7 +410,7 @@ const CreateFlowChart = () => {
           cursor: isDragging ? 'grabbing' : 'grab'
         }}
       >
-        <div className="node start">Start</div>
+        <div className="node start"><img src={StartIcon} alt="Start" /></div>
         <div className="arrow-container">
           <div className="arrow"></div>
           {renderFlowElements()}
@@ -409,8 +429,8 @@ const CreateFlowChart = () => {
               </button>
             </div>
           )}
-        </div>
-        <div className="node end">End</div>
+            </div>
+            <div className="node end"><img src={EndIcon} alt="Stat" /></div>
       </div>
       {showEmailCard && (
         <div className="slide-card-wrapper">
@@ -503,6 +523,12 @@ const CreateFlowChart = () => {
             </form>
           </div>
         </div>
+      )}
+            {showSaveModal && (
+        <SaveWorkflowModal
+          onClose={() => setShowSaveModal(false)}
+          onSave={handleSave}
+        />
       )}
     </div>
   );

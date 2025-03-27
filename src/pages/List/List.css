@@ -102,9 +102,23 @@
 .star-button {
   background: none;
   border: none;
-  color: #666;
   cursor: pointer;
   font-size: 16px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.star-button:hover {
+  transform: scale(1.1);
+}
+
+.star-button img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .execute-button {
@@ -133,7 +147,6 @@
   color: #666;
   cursor: pointer;
   font-size: 16px;
-  padding: 0 4px;
 }
 
 .download-button {

@@ -25,7 +25,10 @@ export const SAMPLE_WORKFLOWS = [
           value: "welcome@company.com"
         }
       }
-    ]
+    ],
+    description: 'Handles new user registration process including API validation, database entry, and welcome email notification',
+    createdBy: 'Zubin Khanna',
+    pinned: true
   },
   {
     id: "wf-2",
@@ -61,7 +64,10 @@ export const SAMPLE_WORKFLOWS = [
           value: "orders@company.com"
         }
       }
-    ]
+    ],
+    description: 'Complete order processing flow including validation, payment processing, and confirmation email to customer',
+    createdBy: 'Zubin Khanna',
+    pinned: true
   },
   {
     id: "wf-3",
@@ -89,7 +95,10 @@ export const SAMPLE_WORKFLOWS = [
           value: "support@company.com"
         }
       }
-    ]
+    ],
+    description: 'Automated support ticket creation workflow with team notifications and priority assignment',
+    createdBy: 'Zubin Khanna',
+    pinned: false
   },
   {
     id: "wf-4",
@@ -117,7 +126,10 @@ export const SAMPLE_WORKFLOWS = [
           value: "Update inventory records in system"
         }
       }
-    ]
+    ],
+    description: 'Real-time inventory management system with automatic stock level monitoring and alerts',
+    createdBy: 'Zubin Khanna',
+    pinned: false
   },
   {
     id: "wf-5",
@@ -153,6 +165,9 @@ export const SAMPLE_WORKFLOWS = [
           value: "newsletter@company.com"
         }
       }
-    ]
+    ],
+    description: 'Automated newsletter distribution system with subscriber management and engagement tracking',
+    createdBy: 'Zubin Khanna',
+    pinned: false
   }
 ]; 

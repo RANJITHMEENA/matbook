@@ -1,17 +1,37 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SAMPLE_WORKFLOWS } from '../../data/sampleWorkflows';
+import Pinned from '../../Assets/Img/pinned.png';
+import UnPinned from '../../Assets/Img/Unpinned.png';
 import './List.css';
 
 const List = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [workflows] = useState(SAMPLE_WORKFLOWS);
+  const [workflows, setWorkflows] = useState(SAMPLE_WORKFLOWS);
 
-  const filteredWorkflows = workflows.filter(workflow =>
-    workflow.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    workflow.id.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handlePinToggle = (workflowId, e) => {
+    e.stopPropagation(); // Prevent row click when clicking pin
+    setWorkflows(prevWorkflows =>
+      prevWorkflows.map(workflow =>
+        workflow.id === workflowId
+          ? { ...workflow, pinned: !workflow.pinned }
+          : workflow
+      )
+    );
+  };
+
+  const filteredWorkflows = workflows
+    .sort((a, b) => {
+      // Sort by pinned status first (pinned items at top)
+      if (a.pinned && !b.pinned) return -1;
+      if (!a.pinned && b.pinned) return 1;
+      // Then sort by updated date
+      return new Date(b.updatedAt) - new Date(a.updatedAt);
+    })
+    .filter(workflow =>
+      workflow.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   const handleWorkflowClick = (workflowId) => {
     navigate(`/flowchart/${workflowId}`);
@@ -84,7 +104,12 @@ const List = () => {
               {workflow.description}
             </div>
             <div className="workflow-actions" onClick={(e) => e.stopPropagation()}>
-              <button className="star-button">★</button>
+              <div
+                className="star-button"
+                onClick={(e) => handlePinToggle(workflow.id, e)}
+              >
+                {workflow.pinned ? <img style={{width: '20px', height: '20px'}} src={Pinned} alt="Pinned" /> : <img style={{width: '20px', height: '20px'}} src={UnPinned} alt="Unpinned" />}
+              </div>
               <button className="execute-button">Execute</button>
               <button 
                 className="edit-button"
