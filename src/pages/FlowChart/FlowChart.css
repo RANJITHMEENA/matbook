@@ -341,14 +341,17 @@
 
 .email-text {
   width: 100%;
-  padding: 8px 35px 8px 15px;
+  padding: 10px;
   border: 1px solid #e0e0e0;
-  border-radius: 20px;
+  border-radius: 5px;
   font-size: 14px;
   background: white;
+  height: 25px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   transition: all 0.3s ease;
   color: #333;
+  border: 1px solid green;
+  font-size: 14px;
 }
 
 .slide-card-wrapper {
@@ -505,12 +508,13 @@
   width: 100%;
   padding: 8px 35px 8px 15px;
   border: 1px solid #e0e0e0;
-  border-radius: 20px;
+  border-radius: 4px;
   font-size: 14px;
   background: white;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   transition: all 0.3s ease;
   color: #333;
+  border: 1px solid green;
 }
 
 .api-call-method {

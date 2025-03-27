@@ -7,22 +7,11 @@ import StartIcon from '../../Assets/Img/Start.png';
 import EndIcon from '../../Assets/Img/End.png';
 import PlusIcon from '../../Assets/Img/plus.png';
 import SaveWorkflowModal from '../../components/SaveWorkflowModal/SaveWorkflowModal';
+import DeleteIcon from '../../Assets/Img/Delete.png';
 
 
 
-const CheckIcon = () => (
-  <svg className="check-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="10" cy="10" r="10" fill="#90EE90"/>
-    <path d="M5 10L8.5 13.5L15 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
 
-const DeleteIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="10" cy="10" r="10" fill="#FF6B6B"/>
-    <path d="M6 6L14 14M14 6L6 14" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-  </svg>
-);
 
 
 
@@ -329,12 +318,12 @@ const CreateFlowChart = () => {
                   >
                     {element.value || 'Email'}
                   </div>
-                  <button 
+                  <div 
                     className="delete-button"
                     onClick={() => handleDeleteClick(index)}
                   >
-                    <DeleteIcon />
-                  </button>
+                    <img src={DeleteIcon} alt="Delete" style={{ width: '20px', height: '20px' }} />
+                  </div>
                 </div>
               )}
               {element.type === 'apiCall' && (
@@ -346,12 +335,12 @@ const CreateFlowChart = () => {
                   >
                     {element.value?.url || 'API Call'}
                   </div>
-                  <button 
+                  <div 
                     className="delete-button"
                     onClick={() => handleDeleteClick(index)}
                   >
-                    <DeleteIcon />
-                  </button>
+                    <img src={DeleteIcon} alt="Delete" />
+                  </div>
                 </div>
               )}
               {element.type === 'textBox' && (
@@ -367,7 +356,7 @@ const CreateFlowChart = () => {
                     className="delete-button"
                     onClick={() => handleDeleteClick(index)}
                   >
-                    <DeleteIcon />
+                    <img src={DeleteIcon} alt="Delete"  />
                   </button>
                 </div>
               )}
@@ -376,7 +365,7 @@ const CreateFlowChart = () => {
               className="plus-button" 
               onClick={() => handlePlusClick(index)}
             >
-              <img src={PlusIcon} alt="Add" style={{ width: '20px', height: '20px' }} />
+              <img src={PlusIcon} alt="Add"  />
             </button>
           </React.Fragment>
         ))}
