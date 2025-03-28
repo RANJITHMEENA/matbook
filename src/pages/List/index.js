@@ -207,7 +207,7 @@ const List = () => {
   };
 
   return (
-    <div className="list-container">
+    <div className="list-container" style={{marginTop: '3rem'}}>
       <div className="list-header">
         <h1>Workflow Builder</h1>
         <div className="button-container" style={{display: 'flex', gap: '1rem'}}>
