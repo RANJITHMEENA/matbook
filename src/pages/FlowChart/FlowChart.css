@@ -340,7 +340,6 @@
 }
 
 .email-text {
-  width: 100%;
   padding: 10px;
   border: 1px solid #e0e0e0;
   border-radius: 5px;
@@ -505,7 +504,6 @@
 }
 
 .api-call-display {
-  width: 100%;
   padding: 8px 35px 8px 15px;
   border: 1px solid #e0e0e0;
   border-radius: 4px;

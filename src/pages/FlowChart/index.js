@@ -7,6 +7,8 @@ import DeleteIcon from '../../Assets/Img/Delete.png';
 import StartIcon from '../../Assets/Img/Start.png';
 import EndIcon from '../../Assets/Img/End.png';
 import PlusIcon from '../../Assets/Img/plus.png';
+import Passed from '../../Assets/Img/Passed.png';
+import Failed from '../../Assets/Img/Failed.png';
 import './FlowChart.css';
 import SaveWorkflowModal from '../../components/SaveWorkflowModal/SaveWorkflowModal';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
@@ -487,6 +489,7 @@ console.log(flowElements , "flowElements");
       </div>
     );
   };
+console.log(initialData , "initialData");
 
   // Update the nav box to show different buttons based on mode
   const renderNavBox = () => (
@@ -497,6 +500,7 @@ console.log(flowElements , "flowElements");
       </button>
       <div className="nav-inputs">
  <p style={{fontSize: '14 px',fontWeight: 600}}>{title}</p>
+ {initialData?.status === 'passed' && <img src={Passed } alt="Pinned" />}
       </div>
       <div style={{cursor: 'pointer'}} onClick={() => setShowSaveModal(true)}>
         <img src={SaveIcon} alt="Save" />

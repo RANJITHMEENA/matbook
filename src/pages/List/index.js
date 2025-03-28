@@ -5,7 +5,7 @@ import Pinned from '../../Assets/Img/pinned.png';
 import UnPinned from '../../Assets/Img/Unpinned.png';
 import './List.css';
 import { db } from '../../config/firebase';
-import { collection, getDocs, addDoc, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, addDoc, deleteDoc, doc, query, orderBy, updateDoc } from 'firebase/firestore';
 
 const List = () => {
   const navigate = useNavigate();
@@ -19,6 +19,7 @@ const List = () => {
   const [showExecuteModal, setShowExecuteModal] = useState(false);
   const [workflowToDelete, setWorkflowToDelete] = useState(null);
   const [workflowToExecute, setWorkflowToExecute] = useState(null);
+  const [message, setMessage] = useState(null);
   const fetchWorkflows = async () => {
     try {
       setLoading(true);
@@ -45,6 +46,8 @@ const List = () => {
       setLoading(false);
     }
   };
+  console.log(workflows,"workflows");
+  
   useEffect(() => {
 
 
@@ -115,12 +118,35 @@ const List = () => {
     setShowExecuteModal(true);
   };
 
-  const confirmExecute = () => {
+  const confirmExecute = async () => {
     if (workflowToExecute) {
-      // Add your execute logic here
-      console.log('Executing workflow:', workflowToExecute.id);
-      setShowExecuteModal(false);
-      setWorkflowToExecute(null);
+      try {
+        // Update workflow status in Firebase
+        const workflowRef = doc(db, 'workflows', workflowToExecute.id);
+        await updateDoc(workflowRef, {
+          status: 'passed',
+          executedAt: new Date().toISOString()
+        });
+
+        // Update local state
+        setWorkflows(prevWorkflows => 
+          prevWorkflows.map(workflow => 
+            workflow.id === workflowToExecute.id 
+              ? { ...workflow, status: 'passed' } 
+              : workflow
+          )
+        );
+
+        // Close modal and reset state
+        setShowExecuteModal(false);
+        setWorkflowToExecute(null);
+
+        // Optional: Show success message
+        setMessage('Workflow executed successfully!');
+      } catch (error) {
+        console.error('Error executing workflow:', error);
+        setError('Failed to execute workflow: ' + error.message);
+      }
     }
   };
 
@@ -175,16 +201,29 @@ const List = () => {
     return status === 'active' ? '#10B981' : '#6B7280';
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('isAuthenticated');
+    navigate('/login');
+  };
+
   return (
     <div className="list-container">
       <div className="list-header">
         <h1>Workflow Builder</h1>
-        <button 
-          className="create-button"
-          onClick={() => navigate('/flowchart/create')}
-        >
-          + Create New Process
-        </button>
+        <div className="button-container" style={{display: 'flex', gap: '1rem'}}>
+          <button 
+            className="create-button"
+            onClick={() => navigate('/flowchart/create')}
+          >
+            + Create New Process
+          </button>
+          <button 
+            className="logout-button"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       <div className="search-bar">

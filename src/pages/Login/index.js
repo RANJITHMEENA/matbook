@@ -1,8 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Logo from '../../Assets/Img/Logo.png'
+import Google from '../../Assets/Img/Google.png'
+import Facebook from '../../Assets/Img/facebook.png'
+import Apple from '../../Assets/Img/apple.png'
 import './Login.css';
 
 const Login = () => {
+  const [email, setEmail] = useState('ranjithkumarproton@gmail.com');
+  const [password, setPassword] = useState('ranjithkumarproton@gmail.com');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
   useEffect(() => {
     // Add login-page class when component mounts
     document.body.classList.add('login-page');
@@ -13,13 +22,26 @@ const Login = () => {
     };
   }, []);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError('');
+
+    if (email === 'ranjithkumarproton@gmail.com' && password === 'ranjithkumarproton@gmail.com') {
+      // Set auth token in localStorage
+      localStorage.setItem('isAuthenticated', 'true');
+      navigate('/list');
+    } else {
+      setError('Invalid username or password');
+    }
+  };
+
   return (
     <div className="login-container">
       <div className="login-left">
         <img src={Logo} alt="HighBridge" className="logo" />
         <div className="hero-content">
-          <h1>Building the Future...</h1>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          <h1 style={{marginTop: '4rem'}}>Building the Future...</h1>
+          <p >Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
         </div>
       </div>
       
@@ -30,20 +52,34 @@ const Login = () => {
             <h1>Log In to your Account</h1>
           </div>
           
-          <form className="login-form">
+          <form className="login-form" onSubmit={handleSubmit}>
+            {error && <div className="error-message">{error}</div>}
+            
             <div className="form-group">
               <label>Email</label>
-              <input type="email" placeholder="Type here..." />
+              <input 
+                type="text"
+                placeholder="Type here..."
+                value={email}
+                defaultValue="ranjithkumarproton@gmail.com"
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
             
             <div className="form-group">
               <label>Password</label>
-              <input type="password" placeholder="Type here..." />
+              <input 
+                type="password"
+                placeholder="Type here..."
+                defaultValue="ranjithkumarproton@gmail.com"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
             
             <div className="form-options">
               <label className="remember-me">
-                <input type="checkbox" />
+                <input type="checkbox" checked={true}/>
                 <span>Remember me</span>
               </label>
               <a href="/forgot-password" className="forgot-password">Forgot Password?</a>
@@ -57,17 +93,17 @@ const Login = () => {
             
             <div className="social-logins">
               <button type="button" className="social-button">
-                <img src="/google-icon.png" alt="Google" />
+                <img src={Google} alt="Google" />
                 <span>Log In with Google</span>
               </button>
               
               <button type="button" className="social-button">
-                <img src="/facebook-icon.png" alt="Facebook" />
+                <img src={Facebook} alt="Facebook" />
                 <span>Log In with Facebook</span>
               </button>
               
               <button type="button" className="social-button">
-                <img src="/apple-icon.png" alt="Apple" />
+                <img src={Apple} alt="Apple" style={{width: '16px'}} />
                 <span>Log In with Apple</span>
               </button>
             </div>
