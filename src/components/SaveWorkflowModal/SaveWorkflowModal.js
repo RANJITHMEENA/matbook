@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import './SaveWorkflowModal.css';
 
-const SaveWorkflowModal = ({ onClose, onSave,flowElements }) => {
+const SaveWorkflowModal = ({ onClose, onSave,flowElements,initialData }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    description: ''
+    name: initialData?.title || '',
+    description: initialData?.description || ''
   });
   const updatedElements = flowElements.length > 0 && flowElements.map((element, index) => ({
     ...element,         // Spread the existing properties of the element
@@ -41,7 +41,7 @@ const SaveWorkflowModal = ({ onClose, onSave,flowElements }) => {
       return;
     }
 
-    onSave(formData,updatedElements);
+    onSave(formData,updatedElements,initialData?.id);
   };
 
   return (

@@ -8,6 +8,9 @@ import StartIcon from '../../Assets/Img/Start.png';
 import EndIcon from '../../Assets/Img/End.png';
 import PlusIcon from '../../Assets/Img/plus.png';
 import './FlowChart.css';
+import SaveWorkflowModal from '../../components/SaveWorkflowModal/SaveWorkflowModal';
+import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../config/firebase';
 
 const FlowChart = ({ initialData = null }) => {
   const { id } = useParams();
@@ -187,6 +190,7 @@ const FlowChart = ({ initialData = null }) => {
 
     setFlowElements(newFlowElements);
   };
+console.log(flowElements , "flowElements");
 
   const handlePlusClick = (index) => {
     setTooltipPosition(index);
@@ -230,10 +234,76 @@ const FlowChart = ({ initialData = null }) => {
     }
   };
 
-  const handleEmailChange = (index, value) => {
-    const newElements = [...flowElements];
-    newElements[index].value = value;
-    setFlowElements(newElements);
+  const handleSave = async (data, updatedElements, workflowId = null) => {
+    try {
+
+
+      // Format elements to match the desired structure
+      const formattedElements = updatedElements.map((element, index) => {
+        let config = {};
+        
+        if (element.type === 'apiCall') {
+          config = {
+            method: element.value?.method || '',
+            url: element.value?.url || '',
+            headers: element.value?.headers || '',
+            body: element.value?.body || ''
+          };
+        } else if (element.type === 'email' || element.type === 'textBox') {
+          config = {
+            value: element.value || ''
+          };
+        }
+
+        return {
+          id: element.id,
+          type: element.type,
+          position: index + 1,
+          config: config
+        };
+      });
+
+      // Construct workflow object
+      const workflowData = {
+        title: data.name,
+        description: data.description,
+        updatedAt: new Date().toISOString(),
+        status: 'active',
+        elements: formattedElements,
+        createdBy: 'User'
+      };
+
+      // If it's a new workflow, add createdAt
+      if (!workflowId) {
+        workflowData.createdAt = new Date().toISOString();
+        workflowData.pinned = false;
+      }
+
+      let message = '';
+      
+      if (workflowId) {
+        // Update existing workflow
+        const workflowRef = doc(db, 'workflows', workflowId);
+        await updateDoc(workflowRef, workflowData);
+        message = 'Workflow updated successfully!';
+      } else {
+        // Create new workflow
+        const workflowRef = await addDoc(collection(db, 'workflows'), workflowData);
+        workflowId = workflowRef.id;
+        message = 'Workflow saved successfully!';
+      }
+
+      // Navigate to list page
+      navigate('/list', { 
+        state: { 
+          message,
+          workflowId
+        }
+      });
+    } catch (error) {
+      setError(error.message);
+      console.error('Error:', error);
+    }
   };
 
   const handleDeleteClick = (index) => {
@@ -329,62 +399,7 @@ const FlowChart = ({ initialData = null }) => {
     }
   };
 
-  const handleSave = async () => {
-    try {
-      if (!title.trim()) {
-        setError('Please fill in the title');
-        return;
-      }
 
-      const workflowData = {
-        id: mode === 'create' ? Date.now().toString() : initialData?.id,
-        title: title.trim(),
-        description: description.trim(),
-        createdBy: 'Zubin Khanna',
-        updatedAt: new Date().toISOString(),
-        status: 'active',
-        nodes: [
-          {
-            id: 'start',
-            type: 'start',
-            position: 0,
-            next: flowElements.length > 0 ? flowElements[0].id : 'end'
-          },
-          {
-            id: 'end',
-            type: 'end',
-            position: -1,
-            next: null
-          }
-        ],
-        elements: flowElements.map((element, index) => ({
-          id: element.id,
-          type: element.type,
-          position: index + 1,
-          next: index === flowElements.length - 1 ? 'end' : flowElements[index + 1].id,
-          config: {
-            ...(element.type === 'email' && {
-              value: element.value
-            }),
-            ...(element.type === 'apiCall' && {
-              method: element.value?.method || '',
-              url: element.value?.url || '',
-              headers: element.value?.headers || '',
-              body: element.value?.body || ''
-            }),
-            ...(element.type === 'textBox' && {
-              value: element.value
-            })
-          }
-        }))
-      };
-
-      navigate('/list');
-    } catch (error) {
-      setError(error.message);
-      console.error('Error:', error);
-    }
-  };
 
   const renderFlowElements = () => {
     if (flowElements.length === 0) {
@@ -614,7 +629,14 @@ const FlowChart = ({ initialData = null }) => {
             </div>
           )}
         </>
-   
+        {showSaveModal && (
+        <SaveWorkflowModal
+          onClose={() => setShowSaveModal(false)}
+          onSave={handleSave}
+          flowElements={flowElements}
+          initialData={initialData}
+        />
+      )}
     </div>
   );
 };
