@@ -3,6 +3,7 @@
   max-width: 1200px;
   margin: 0 auto;
   background: #fff;
+  overflow-x: auto;
 }
 
 .list-header {
@@ -18,6 +19,12 @@
   font-weight: 500;
 }
 
+.button-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
 .create-button {
   background-color: #333;
   color: white;
@@ -27,6 +34,7 @@
   font-weight: 500;
   cursor: pointer;
   font-size: 14px;
+  white-space: nowrap;
 }
 
 .search-bar {
@@ -236,7 +244,7 @@
 }
 
 .logout-button {
-  width: 50px;
+  min-width: 80px;
   height: 40px;
   border: 1px solid #E5E7EB;
   border-radius: 8px;
@@ -247,6 +255,7 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .logout-button:hover {
@@ -377,4 +386,135 @@
 
 .confirm-button:hover {
   background: #DC2626;
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+  .list-container {
+    padding: 20px;
+  }
+  
+  .list-headers, .workflow-item {
+    grid-template-columns: 2fr 1fr 2fr 2fr 1.5fr;
+    padding: 12px 16px;
+    min-width: 800px;
+  }
+}
+
+@media (max-width: 992px) {
+  .list-container {
+    padding: 16px;
+  }
+  
+  .list-headers, .workflow-item {
+    min-width: 800px;
+  }
+  
+  .button-container {
+    gap: 0.5rem;
+  }
+  
+  .create-button {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  .logout-button {
+    min-width: 70px;
+    height: 36px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .list-container {
+    padding: 12px;
+  }
+  
+  .list-header {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .button-container {
+    width: auto;
+    gap: 8px;
+  }
+  
+  .create-button {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  
+  .logout-button {
+    min-width: 60px;
+    height: 32px;
+    font-size: 12px;
+  }
+  
+  .list-headers, .workflow-item {
+    min-width: 800px;
+  }
+}
+
+@media (max-width: 480px) {
+  .list-container {
+    padding: 8px;
+  }
+  
+  .list-header {
+    flex-direction: row;
+    gap: 8px;
+  }
+  
+  .button-container {
+    gap: 4px;
+  }
+  
+  .create-button {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  
+  .logout-button {
+    min-width: 50px;
+    height: 28px;
+    font-size: 11px;
+  }
+  
+  .list-headers, .workflow-item {
+    min-width: 800px;
+  }
+}
+
+/* Handle very small screens */
+@media (max-width: 320px) {
+  .list-container {
+    padding: 4px;
+  }
+  
+  .list-header {
+    flex-direction: row;
+    gap: 4px;
+  }
+  
+  .button-container {
+    gap: 4px;
+  }
+  
+  .create-button {
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+  
+  .logout-button {
+    min-width: 45px;
+    height: 26px;
+    font-size: 10px;
+  }
+  
+  .list-headers, .workflow-item {
+    min-width: 800px;
+  }
 } 
