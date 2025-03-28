@@ -209,19 +209,13 @@ const List = () => {
           <div 
             key={workflow.id} 
             className="workflow-item"
-            onClick={() => handleWorkflowClick(workflow.id)}
           >
             <div className="workflow-name">{workflow.title}</div>
-            <div className="workflow-id">#{workflow.id.split('-')[1]}</div>
+            <div className="workflow-id">
+              #{workflow.id.substring(0, 5)}
+            </div>
             <div className="workflow-edited">
-              {workflow.createdBy} | {new Date(workflow.updatedAt).toLocaleString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-              })} IST - {new Date(workflow.updatedAt).toLocaleDateString('en-US', {
-                day: '2-digit',
-                month: '2-digit'
-              })}
+              {workflow.updatedAt} 
             </div>
             <div className="workflow-description">
               {workflow.description}
@@ -241,6 +235,7 @@ const List = () => {
               </button>
               <button 
                 className="edit-button"
+                style={{cursor: 'pointer'}}
                 onClick={(e) => {
                   e.stopPropagation();
                   navigate(`/flowchart/${workflow.id}?mode=edit`);
