@@ -5,6 +5,7 @@ import List from './pages/List';
 import CreateFlowChart from './pages/CreateFlowChart';
 import ViewFlowChart from './pages/FlowChart/ViewFlowChart';
 import './App.css';
+import './config/firebase'; // Import Firebase configuration
 
 function App() {
   return (

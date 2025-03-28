@@ -1,19 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SAMPLE_WORKFLOWS } from '../../data/sampleWorkflows';
 import Pinned from '../../Assets/Img/pinned.png';
 import UnPinned from '../../Assets/Img/Unpinned.png';
 import './List.css';
+import { db } from '../../config/firebase';
+import { collection, getDocs, addDoc, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 
 const List = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [workflows, setWorkflows] = useState(SAMPLE_WORKFLOWS);
+  const [workflows, setWorkflows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeTooltip, setActiveTooltip] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showExecuteModal, setShowExecuteModal] = useState(false);
   const [workflowToDelete, setWorkflowToDelete] = useState(null);
   const [workflowToExecute, setWorkflowToExecute] = useState(null);
+
+
+  // Function to fetch workflows from Firestore
+  const fetchWorkflows = async () => {
+    try {
+      const workflowsCollection = collection(db, 'workflows');
+      const workflowsQuery = query(workflowsCollection, orderBy('updatedAt', 'desc'));
+      const snapshot = await getDocs(workflowsQuery);
+      
+      const workflowsData = snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      }));
+      
+      setWorkflows(workflowsData);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching workflows:', err);
+      setError('Error loading workflows. Please refresh the page.');
+      setWorkflows([]); // Reset workflows on error
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Initialize data and set up real-time updates
+  useEffect(() => {
+    const setup = async () => {
+      await fetchWorkflows();
+    };
+    
+    setup();
+  }, []);
 
   const handlePinToggle = (workflowId, e) => {
     e.stopPropagation(); // Prevent row click when clicking pin
@@ -31,20 +68,34 @@ const List = () => {
     setActiveTooltip(activeTooltip === workflowId ? null : workflowId);
   };
 
-  const handleDeleteClick = (e, workflow) => {
+  const handleDeleteClick = async (e, workflow) => {
     e.stopPropagation();
     setWorkflowToDelete(workflow);
     setShowDeleteModal(true);
     setActiveTooltip(null);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (workflowToDelete) {
-      setWorkflows(prevWorkflows => 
-        prevWorkflows.filter(workflow => workflow.id !== workflowToDelete.id)
-      );
-      setShowDeleteModal(false);
-      setWorkflowToDelete(null);
+      try {
+        setLoading(true); // Show loading state while deleting
+        // Delete the document from Firebase
+        const workflowRef = doc(db, 'workflows', workflowToDelete.id);
+        await deleteDoc(workflowRef);
+        
+        // Fetch the updated list
+        await fetchWorkflows();
+        
+        // Reset states
+        setShowDeleteModal(false);
+        setWorkflowToDelete(null);
+        setError(null);
+      } catch (err) {
+        console.error('Error deleting workflow:', err);
+        setError('Failed to delete workflow. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -88,16 +139,17 @@ const List = () => {
   }, []);
 
   const filteredWorkflows = workflows
-    .sort((a, b) => {
-      // Sort by pinned status first (pinned items at top)
-      if (a.pinned && !b.pinned) return -1;
-      if (!a.pinned && b.pinned) return 1;
-      // Then sort by updated date
-      return new Date(b.updatedAt) - new Date(a.updatedAt);
-    })
     .filter(workflow =>
       workflow.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+  if (loading) {
+    return <div className="loading">Loading workflows...</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
 
   const handleWorkflowClick = (workflowId) => {
     navigate(`/flowchart/${workflowId}`);
