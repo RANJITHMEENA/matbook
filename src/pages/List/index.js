@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { SAMPLE_WORKFLOWS } from '../../data/sampleWorkflows';
 import Pinned from '../../Assets/Img/pinned.png';
 import UnPinned from '../../Assets/Img/Unpinned.png';
@@ -9,6 +9,7 @@ import { collection, getDocs, addDoc, deleteDoc, doc, query, orderBy } from 'fir
 
 const List = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // To access navigation state
   const [searchTerm, setSearchTerm] = useState('');
   const [workflows, setWorkflows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,39 +19,43 @@ const List = () => {
   const [showExecuteModal, setShowExecuteModal] = useState(false);
   const [workflowToDelete, setWorkflowToDelete] = useState(null);
   const [workflowToExecute, setWorkflowToExecute] = useState(null);
-
-
-  // Function to fetch workflows from Firestore
   const fetchWorkflows = async () => {
     try {
-      const workflowsCollection = collection(db, 'workflows');
-      const workflowsQuery = query(workflowsCollection, orderBy('updatedAt', 'desc'));
-      const snapshot = await getDocs(workflowsQuery);
+      setLoading(true);
+      const workflowsRef = collection(db, 'workflows');
+      const q = query(workflowsRef, 
+        orderBy('createdAt', 'desc')
+      );
       
-      const workflowsData = snapshot.docs.map(doc => ({
+      const querySnapshot = await getDocs(q);
+      const workflowData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
         ...doc.data(),
-        id: doc.id
+        // Format dates for display
+        createdAt: new Date(doc.data().createdAt).toLocaleDateString(),
+        updatedAt: new Date(doc.data().updatedAt).toLocaleDateString()
       }));
       
-      setWorkflows(workflowsData);
+      setWorkflows(workflowData);
       setError(null);
     } catch (err) {
+      setError('Failed to fetch workflows: ' + err.message);
       console.error('Error fetching workflows:', err);
-      setError('Error loading workflows. Please refresh the page.');
-      setWorkflows([]); // Reset workflows on error
     } finally {
       setLoading(false);
     }
   };
-
-  // Initialize data and set up real-time updates
   useEffect(() => {
-    const setup = async () => {
-      await fetchWorkflows();
-    };
-    
-    setup();
-  }, []);
+
+
+    fetchWorkflows();
+
+    // Show success message if available
+    if (location.state?.message) {
+      // You can implement a toast/notification system here
+      console.log(location.state.message);
+    }
+  }, [location]);
 
   const handlePinToggle = (workflowId, e) => {
     e.stopPropagation(); // Prevent row click when clicking pin

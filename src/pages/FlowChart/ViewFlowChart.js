@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import FlowChart from './index';
-import { SAMPLE_WORKFLOWS } from '../../data/sampleWorkflows';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../config/firebase';
 
 const ViewFlowChart = () => {
   const { id } = useParams();
@@ -10,25 +11,37 @@ const ViewFlowChart = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Simulate API call to fetch workflow data
-    const loadWorkflow = () => {
+    const loadWorkflow = async () => {
       setLoading(true);
       try {
-        const foundWorkflow = SAMPLE_WORKFLOWS.find(w => w.id === id);
-        if (foundWorkflow) {
-          setWorkflow(foundWorkflow);
+        // Get document reference using the workflow ID
+        const workflowRef = doc(db, 'workflows', id);
+        
+        // Fetch the document
+        const workflowDoc = await getDoc(workflowRef);
+        
+        if (workflowDoc.exists()) {
+          // Convert the document to data and include the ID
+          const workflowData = {
+            id: workflowDoc.id,
+            ...workflowDoc.data()
+          };
+          setWorkflow(workflowData);
           setError(null);
         } else {
           setError('Workflow not found');
         }
       } catch (err) {
-        setError('Error loading workflow');
+        console.error('Error loading workflow:', err);
+        setError('Error loading workflow: ' + err.message);
       } finally {
         setLoading(false);
       }
     };
 
-    loadWorkflow();
+    if (id) {
+      loadWorkflow();
+    }
   }, [id]);
 
   if (loading) {

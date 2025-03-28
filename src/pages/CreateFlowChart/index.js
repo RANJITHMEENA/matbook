@@ -8,6 +8,8 @@ import EndIcon from '../../Assets/Img/End.png';
 import PlusIcon from '../../Assets/Img/plus.png';
 import SaveWorkflowModal from '../../components/SaveWorkflowModal/SaveWorkflowModal';
 import DeleteIcon from '../../Assets/Img/Delete.png';
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '../../config/firebase';
 
 
 
@@ -75,21 +77,64 @@ const CreateFlowChart = () => {
     }
   };
 
-  const handleSave = async () => {
-    try {
-      if (!title.trim()) {
-        setError('Please fill in the title');
-        return;
-      }
-
+  const handleSave = async (data, updatedElements) => {
   
+    try {
 
-      navigate('/list');
+
+      // Format elements to match the desired structure
+      const formattedElements = updatedElements.map((element, index) => {
+        let config = {};
+        
+        if (element.type === 'apiCall') {
+          config = {
+            method: element.value?.method || '',
+            url: element.value?.url || '',
+            headers: element.value?.headers || '',
+            body: element.value?.body || ''
+          };
+        } else if (element.type === 'email' || element.type === 'textBox') {
+          config = {
+            value: element.value || ''
+          };
+        }
+
+        return {
+          id: element.id,
+          type: element.type,
+          position: index + 1,
+          config: config
+        };
+      });
+
+      // Construct workflow object
+      const workflowData = {
+        title: data.name,
+        description: data.description,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        status: 'active',
+        elements: formattedElements,
+        createdBy: 'User', // You can replace with actual user data
+        pinned: false
+      };
+
+      // Save to Firebase
+      const workflowRef = await addDoc(collection(db, 'workflows'), workflowData);
+      
+      // Navigate to list page
+      navigate('/list', { 
+        state: { 
+          message: 'Workflow saved successfully!',
+          workflowId: workflowRef.id 
+        }
+      });
     } catch (error) {
       setError(error.message);
       console.error('Error:', error);
     }
   };
+
   // Handle mouse move for panning
   const handleMouseMove = (e) => {
     if (isDragging) {
@@ -163,7 +208,7 @@ const CreateFlowChart = () => {
     };
     
     const position = tooltipPosition === null ? 0 : tooltipPosition + 1;
-    const newElements = [...flowElements];
+    const newElements = [...flowElements];    
     newElements.splice(position, 0, newElement);
     setFlowElements(newElements);
     setShowTooltip(false);
@@ -517,6 +562,7 @@ const CreateFlowChart = () => {
         <SaveWorkflowModal
           onClose={() => setShowSaveModal(false)}
           onSave={handleSave}
+          flowElements={flowElements}
         />
       )}
     </div>
